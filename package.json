@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/asherman-ca/node_one#readme",
   "dependencies": {
+    "ejs": "^2.5.6",
     "express": "^4.15.2",
     "mongodb": "^2.2.25",
     "react": "^15.4.2",
