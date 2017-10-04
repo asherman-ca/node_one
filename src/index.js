@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import App from './components/core/App';
 
 ReactDom.render(
-  React.createElement('h2', null, 'hello react'),
+  <App initialContests={window.initialData.contests} />,
   document.getElementById('root')
 );
