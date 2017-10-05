@@ -16,7 +16,7 @@ router.get('/contests', (req, res) => {
 router.get('/contests/:contestId', (req, res) => {
   // req.params.contestId contains contestId
   let contest = contests[req.params.contestId];
-  contest.description = 'lorem ipsum';
+  contest.description = 'lorem ipsum description';
 
   res.send(contest);
 });
