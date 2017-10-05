@@ -8,11 +8,10 @@ const pushState = (obj, url) =>
   window.history.pushState(obj, '', url);
 
 class App extends React.Component {
-  state = {
-    pageHeader: 'Naming Contest',
-    contests: this.props.initialContests
-  };
-  
+  static propTypes = {
+    initialData: React.PropTypes.object.isRequired
+  }
+  state = this.props.initialData;
 
   // componentDidMount() {
     // axios.get('/api/contests')
@@ -42,7 +41,6 @@ class App extends React.Component {
     // lookup the contest 
     Api.fetchContest(contestId).then(contest => {
       this.setState({
-        pageHeader: contest.contestName,
         currentContestId: contest.id,
         contests: {
           ...this.state.contests,
@@ -52,9 +50,20 @@ class App extends React.Component {
     });
   };
 
+  pageHeader() {
+    if (this.state.currentContestId) {
+      return this.currentContest().contestName;
+    }
+    return 'Naming Contests';
+  }
+  
+  currentContest() {
+    return this.state.contests[this.state.currentContestId];
+  }
+
   currentLocation() {
     if (this.state.currentContestId) {
-      return <Contest {...this.state.contests[this.state.currentContestId]} />;
+      return <Contest {...this.currentContest()} />;
     } else {
       return <ContestList
                 onContestClick={this.fetchContest}
@@ -67,7 +76,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Header
-          headerMessage={this.state.pageHeader}
+          headerMessage={this.pageHeader()}
         />
         {this.currentLocation()}
       </div>  
@@ -77,8 +86,7 @@ class App extends React.Component {
 
 
 App.propTypes = {
-  headerMessage: React.PropTypes.string,
-  initialContests: React.PropTypes.object
+  initialData: React.PropTypes.object
 };
 
 export default App;
