@@ -7,6 +7,10 @@ import * as Api from '../../api';
 const pushState = (obj, url) => 
   window.history.pushState(obj, '', url);
 
+const onPopState = handler => {
+  window.onpopstate = handler;
+};
+
 class App extends React.Component {
   static propTypes = {
     initialData: React.PropTypes.object.isRequired
@@ -26,11 +30,16 @@ class App extends React.Component {
 
   // ajax, timers, listeners
   componentDidMount() {
-
+    onPopState((event) => {
+      this.setState({
+        currentContestId: (event.state || {}).currentContestId
+      });
+    });
   }
 
   // clean timers, listeners
   componentWillUnmount() {
+    onPopState(null);
   }
 
   fetchContest = (contestId) => {
@@ -50,6 +59,20 @@ class App extends React.Component {
     });
   };
 
+  fetchContestList = () => {
+    pushState(
+      { currentContestId: null },
+      '/'
+    );
+    // lookup the contest 
+    Api.fetchContestList().then(contests => {
+      this.setState({
+        currentContestId: null,
+        contests
+      });
+    });
+  };
+
   pageHeader() {
     if (this.state.currentContestId) {
       return this.currentContest().contestName;
@@ -63,12 +86,15 @@ class App extends React.Component {
 
   currentLocation() {
     if (this.state.currentContestId) {
-      return <Contest {...this.currentContest()} />;
+      return <Contest
+                contestListClick={this.fetchContestList}
+                {...this.currentContest()}
+             />;
     } else {
       return <ContestList
                 onContestClick={this.fetchContest}
                 list={this.state.contests} 
-              />;
+             />;
     }
   }
 
