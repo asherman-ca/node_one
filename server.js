@@ -1,58 +1,12 @@
-// import config, { nodeEnv, logStars } from "./config";
-//
-// console.log(config, nodeEnv);
-// logStars('function');
-
-// import https from 'https';
-
-// https.get('https://www.lynda.com', res => {
-//   console.log('Response status code: ', res.statusCode);
-//
-//   res.on('data', chunk => {
-//     console.log(chunk.toString());
-//   });
-// });
-// response object a writable stream, which means we can use it to stream data to the user and that's very powerful
-
-// server.on('request', (req, res) => {
-//   res.write('Hello HTTP!\n');
-//   setTimeout(() => {
-//     res.write('I can stream!\n');
-//     res.end();
-//   }, 3000);
-// });
-
-// this is the server without express
-
-// import http from 'http';
-//
-// const server = http.createServer((req, res) => {
-//   res.write('Hello HTTP!\n');
-//   setTimeout(() => {
-//     res.write('I can stream!\n');
-//     res.end();
-//   }, 3000);
-// });
-//
-// server.listen(8080);
-
-
-// basic route without using express notation:
-
-// server.get('/about.html', (req, res) => {
-//   fs.readFile('./about.html', (err, data) => {
-//     res.send(data.toString());
-//   });
-// });
-// this can be written as:
-
 import config from './config';
 import apiRouter from './api';
 import express from 'express';
 import sassMiddleware from 'node-sass-middleware';
 import path from 'path';
+import bodyParser from 'body-parser';
 
 const server = express();
+server.use(bodyParser.json());
 
 server.use(sassMiddleware({
   src: path.join(__dirname, 'sass'),
@@ -72,7 +26,10 @@ server.get(['/', '/contest/:contestId'], (req, res) => {
         initialMarkup
       });
     })
-    .catch(console.error);
+    .catch(error => {
+      console.error(error);
+      res.status(404).send('Bad Request');
+    });
 });
 
 server.use('/api', apiRouter);
