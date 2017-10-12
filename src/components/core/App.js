@@ -84,6 +84,23 @@ class App extends React.Component {
     });
   };
 
+  addName = (newName, contestId) => {
+    Api.addName(newName, contestId)
+       .then(response => {
+         this.setState({
+           contests: {
+             ...this.state.contests,
+             [response.updatedContest._id]: response.updatedContest
+           },
+           names: {
+             ...this.state.names,
+             [response.newName._id]: response.newName
+           }
+         })
+       .catch(console.error);  
+       });
+  }
+
   pageHeader() {
     if (this.state.currentContestId) {
       return this.currentContest().contestName;
@@ -110,6 +127,7 @@ class App extends React.Component {
                 contestListClick={this.fetchContestList}
                 fetchNames={this.fetchNames}
                 lookupName={this.lookupName}
+                addName={this.addName}
                 {...this.currentContest()}
              />;
     } else {

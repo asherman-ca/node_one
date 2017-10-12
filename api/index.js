@@ -12,10 +12,6 @@ MongoClient.connect(config.mongodbUri, (err, db) => {
 });
 
 const router = express.Router();
-// const contests = data.contests.reduce((obj, contest) => {
-//   obj[contest.id] = contest;
-//   return obj;
-// }, {}); 
 
 router.get('/contests', (req, res) => {
   let contests = {};
